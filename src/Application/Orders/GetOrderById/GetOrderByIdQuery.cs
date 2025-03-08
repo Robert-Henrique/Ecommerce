@@ -1,7 +1,7 @@
 ﻿using Ecommerce.Application.DTOs;
 using MediatR;
 
-namespace Ecommerce.Application.Orders.GetOrder;
+namespace Ecommerce.Application.Orders.GetOrderById;
 
 public class GetOrderByIdQuery : IRequest<OrderDto>
 {

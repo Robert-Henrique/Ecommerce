@@ -2,7 +2,7 @@
 using Ecommerce.Domain.Repositories;
 using MediatR;
 
-namespace Ecommerce.Application.Orders.GetOrder;
+namespace Ecommerce.Application.Orders.GetOrderById;
 
 public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, OrderDto>
 {

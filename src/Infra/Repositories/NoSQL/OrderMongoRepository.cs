@@ -46,6 +46,18 @@ public class OrderMongoRepository : IOrderMongoRepository
 
         if (orderDocument == null) return null;
 
+        return MappingOrderReadModel(orderDocument);
+    }
+
+    public async Task<IEnumerable<OrderReadModel>> GetAllAsync()
+    {
+        var orders = await _orders.Find(FilterDefinition<OrderDocument>.Empty).ToListAsync();
+
+        return orders.Select(MappingOrderReadModel);
+    }
+
+    private static OrderReadModel MappingOrderReadModel(OrderDocument orderDocument)
+    {
         return new OrderReadModel
         {
             OrderId = orderDocument.Id,
