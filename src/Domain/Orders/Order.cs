@@ -10,7 +10,7 @@ public class Order : Entity<Order>
     public decimal TotalAmount { get; protected set; }
     public OrderStatus Status { get; protected set; }
 
-    private readonly List<OrderItem> _orderItems = new();
+    private List<OrderItem> _orderItems = new();
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
     private Order() { }
@@ -21,6 +21,14 @@ public class Order : Entity<Order>
         OrderDate = DateTime.UtcNow;
         Status = OrderStatus.Pending;
         _orderItems = items.ToList();
+        TotalAmount = _orderItems.Sum(item => item.TotalPrice);
+    }
+
+    public void Update(Customer customer, OrderStatus status, List<OrderItem> items)
+    {
+        Customer = customer;
+        Status = status;
+        _orderItems = items;
         TotalAmount = _orderItems.Sum(item => item.TotalPrice);
     }
 }

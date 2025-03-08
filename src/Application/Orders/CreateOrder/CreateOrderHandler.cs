@@ -1,9 +1,10 @@
-﻿using Ecommerce.Domain.Orders;
+﻿using Ecommerce.Application.DTOs;
+using Ecommerce.Domain.Orders;
 using Ecommerce.Domain.Repositories;
 using Ecommerce.Domain.ValueObjects;
 using MediatR;
 
-namespace Ecommerce.Application.Orders;
+namespace Ecommerce.Application.Orders.CreateOrder;
 
 public class CreateOrderHandler : IRequestHandler<CreateOrderCommand, int>
 {
@@ -11,8 +12,8 @@ public class CreateOrderHandler : IRequestHandler<CreateOrderCommand, int>
     private readonly IProductRepository _productRepository;
     private readonly IOrderRepository _orderRepository;
 
-    public CreateOrderHandler(ICustomerRepository customerRepository, 
-        IProductRepository productRepository, 
+    public CreateOrderHandler(ICustomerRepository customerRepository,
+        IProductRepository productRepository,
         IOrderRepository orderRepository)
     {
         _customerRepository = customerRepository;
@@ -22,25 +23,25 @@ public class CreateOrderHandler : IRequestHandler<CreateOrderCommand, int>
 
     public async Task<int> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {
-        var custormer = _customerRepository.GetByIdAsync(command.CustomerId);
-        
+        var custormer = await _customerRepository.GetByIdAsync(command.CustomerId, cancellationToken);
+
         if (custormer == null)
             throw new KeyNotFoundException($"Custormer with ID {command.CustomerId} not found");
 
-        var orderItems = command.OrderItems.Select(CreateOrderItem);
-        var order = new Order(custormer.Result, orderItems);
+        var orderItems = command.Items.Select(CreateOrderItem);
+        var order = new Order(custormer, orderItems);
         var createdOrder = await _orderRepository.CreateAsync(order, cancellationToken);
         return createdOrder.Id;
     }
 
-    private OrderItem CreateOrderItem(OrderItemCommand command)
+    private OrderItem CreateOrderItem(OrderItemRequestDto itemRequest)
     {
-        var product = _productRepository.GetByIdAsync(command.ProductId).Result;
-        
+        var product = _productRepository.GetByIdAsync(itemRequest.ProductId).Result;
+
         if (product == null)
-            throw new KeyNotFoundException($"Product with ID {command.ProductId} not found");
+            throw new KeyNotFoundException($"Product with ID {itemRequest.ProductId} not found");
 
         var externalIdentity = new ExternalIdentity(product.Id, product.Name);
-        return new OrderItem(externalIdentity, command.Quantity, product.Price);
+        return new OrderItem(externalIdentity, itemRequest.Quantity, product.Price);
     }
 }

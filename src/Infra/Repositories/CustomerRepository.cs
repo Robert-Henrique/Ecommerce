@@ -15,6 +15,6 @@ public class CustomerRepository : ICustomerRepository
 
     public async Task<Customer?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        return await _context.Customers.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+        return await _context.Customers.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
     }
 }

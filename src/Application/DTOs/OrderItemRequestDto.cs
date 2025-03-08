@@ -1,6 +1,6 @@
-﻿namespace Ecommerce.Application.Orders;
+﻿namespace Ecommerce.Application.DTOs;
 
-public class OrderItemCommand
+public class OrderItemRequestDto
 {
     public int ProductId { get; set; }
     public int Quantity { get; set; }
