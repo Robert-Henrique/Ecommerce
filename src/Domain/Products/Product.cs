@@ -7,6 +7,8 @@ public class Product : Entity<Product>
     public string Name { get; protected set; }
     public decimal Price { get; protected set; }
 
+    private Product() { }
+
     public Product(string name, decimal price)
     {
         Validate(name, price);
