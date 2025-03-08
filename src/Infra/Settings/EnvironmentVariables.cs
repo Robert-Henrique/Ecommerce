@@ -14,6 +14,26 @@ public static class EnvironmentVariables
         return databaseConnectionString ?? "";
     }
 
+    public static string GetMongoConnectionString()
+    {
+        var connectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING");
+
+        if (string.IsNullOrEmpty(connectionString))
+            connectionString = GetConfigurations().GetSection("MongoSettings:ConnectionString").Value;
+
+        return connectionString ?? "";
+    }
+
+    public static string GetMongoDatabaseName()
+    {
+        var databaseName = Environment.GetEnvironmentVariable("MONGO_DATABASE_NAME");
+
+        if (string.IsNullOrEmpty(databaseName))
+            databaseName = GetConfigurations().GetSection("MongoSettings:DatabaseName").Value;
+
+        return databaseName ?? "";
+    }
+
     private static IConfigurationRoot GetConfigurations()
     {
         return new ConfigurationBuilder()

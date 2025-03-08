@@ -1,6 +1,7 @@
 ﻿using Ecommerce.Application.DTOs;
 using Ecommerce.Application.Orders.CreateOrder;
 using Ecommerce.Application.Orders.DeleteOrder;
+using Ecommerce.Application.Orders.GetOrder;
 using Ecommerce.Application.Orders.UpdateOrder;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -54,21 +55,18 @@ namespace Ecommerce.API.Controllers
 
             return NoContent();
         }
-
-        // GET: api/orders/{id}
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderDto>> GetOrderById(int id)
         {
-            //var order = await _mediator.Send(new GetOrderByIdQuery(id));
+            var order = await _mediator.Send(new GetOrderByIdQuery(id));
 
-            //if (order == null)
-            //{
-            //    return NotFound();
-            //}
+            if (order == null)
+            {
+                return NotFound();
+            }
 
-            //return Ok(order);
-
-            return Ok();
+            return Ok(order);
         }
 
         //// GET: api/orders

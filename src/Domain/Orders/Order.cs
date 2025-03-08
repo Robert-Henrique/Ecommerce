@@ -11,7 +11,7 @@ public class Order : Entity<Order>
     public OrderStatus Status { get; protected set; }
 
     private List<OrderItem> _orderItems = new();
-    public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
+    public IEnumerable<OrderItem> OrderItems => _orderItems;
 
     private Order() { }
 
