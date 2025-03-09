@@ -1,4 +1,6 @@
-﻿using Ecommerce.Domain.Repositories;
+﻿using Ecommerce.Application.Events;
+using Ecommerce.Domain.Repositories;
+using MassTransit;
 using MediatR;
 
 namespace Ecommerce.Application.Orders.DeleteOrder;
@@ -6,10 +8,12 @@ namespace Ecommerce.Application.Orders.DeleteOrder;
 public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public DeleteOrderHandler(IOrderRepository orderRepository)
+    public DeleteOrderHandler(IOrderRepository orderRepository, IPublishEndpoint publishEndpoint)
     {
         _orderRepository = orderRepository;
+        _publishEndpoint = publishEndpoint;
     }
 
     public async Task<bool> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
@@ -18,6 +22,7 @@ public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand, bool>
         if (order == null) return false;
 
         await _orderRepository.DeleteAsync(order, cancellationToken);
+        await _publishEndpoint.Publish(new OrderDeleted(order.Id), cancellationToken);
         return true;
     }
 }

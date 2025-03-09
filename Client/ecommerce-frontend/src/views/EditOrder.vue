@@ -65,10 +65,11 @@
           { id: 2, name: 'Notebook Dell Inspiron I15', price: 3219.00 }
         ],
         statuses: {
-          1: 'Pendente',
-          2: 'Processando',
-          3: 'Enviado',
-          4: 'Entregue'
+          0: 'Pendente',
+          1: 'Pago',
+          2: 'Enviado',
+          3: 'Entregue',
+          4: 'Cancelado'
         },
         message: ''
       };

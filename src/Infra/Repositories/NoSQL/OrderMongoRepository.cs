@@ -56,6 +56,34 @@ public class OrderMongoRepository : IOrderMongoRepository
         return orders.Select(MappingOrderReadModel);
     }
 
+    public async Task UpdateOrderAsync(int id, Order updatedOrder)
+    {
+        var orderDocument = new OrderDocument
+        {
+            Id = updatedOrder.Id,
+            CustomerId = updatedOrder.Customer.Id,
+            CustomerName = updatedOrder.Customer.Name,
+            TotalAmount = updatedOrder.TotalAmount,
+            OrderDate = updatedOrder.OrderDate,
+            Status = updatedOrder.Status.ToString(),
+            Items = updatedOrder.OrderItems.Select(i => new OrderItemDocument
+            {
+                ProductId = i.Product.Id,
+                ProductName = i.Product.Name,
+                Quantity = i.Quantity,
+                UnitPrice = i.UnitPrice,
+                TotalPrice = i.TotalPrice
+            }).ToList()
+        };
+
+        await _orders.ReplaceOneAsync(o => o.Id == id, orderDocument);
+    }
+
+    public async Task DeleteOrderAsync(int id)
+    {
+        await _orders.DeleteOneAsync(o => o.Id == id);
+    }
+
     private static OrderReadModel MappingOrderReadModel(OrderDocument orderDocument)
     {
         return new OrderReadModel

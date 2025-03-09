@@ -19,6 +19,8 @@ builder.Services.AddDbContext<DefaultContext>(options =>
 builder.Services.AddMassTransit(config =>
 {
     config.AddConsumer<OrderCreatedConsumer>();
+    config.AddConsumer<OrderUpdatedConsumer>();
+    config.AddConsumer<OrderDeletedConsumer>();
 
     config.UsingInMemory((context, cfg) =>
     {
@@ -39,6 +41,14 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderMongoRepository, OrderMongoRepository>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        builder => builder.WithOrigins("http://localhost:8080")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -58,6 +68,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowFrontend");
 
 app.UseHttpsRedirection();
 
